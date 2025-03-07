@@ -207,3 +207,12 @@ form input {
   font-weight: bold;
   color: #333;
 }
+
+.clickable-text {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.clickable-text:hover {
+  color:cadetblue;
+}
