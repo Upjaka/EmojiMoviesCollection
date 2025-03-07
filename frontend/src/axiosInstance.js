@@ -10,14 +10,19 @@ const axiosInstance = axios.create({
     }
 });
 
-// // Автоматически добавляем токен в заголовки, если он есть
-// axiosInstance.interceptors.request.use(config => {
-//     const token = localStorage.getItem('access');
-//     if (token) {
-//         config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-// }, error => Promise.reject(error));
+axiosInstance.interceptors.request.use(config => {
+    const token = localStorage.getItem('access');
+
+    // Исключаем запросы на регистрацию и вход
+    if (!config.url.includes('/register/') && !config.url.includes('/login/')) {
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+    }
+
+    return config;
+}, error => Promise.reject(error));
+
 
 // Функция для обновления токенов
 const refreshTokens = async () => {
