@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import './App.css';
 import MoviesList from './components/MovieList';
+import AuthModal from './components/AuthModal';
+
 import axiosInstance from './axiosInstance';
 
 function App() {
@@ -94,88 +96,12 @@ function App() {
       </div>
 
       {/* Модальное окно для входа */}
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close-btn" onClick={closeModal}>&times;</span>
-            
-            {/* Переключение между формами */}
-            {isRegistering ? (
-              <>
-                <h2>Регистрация</h2>
-                <form onSubmit={handleRegister}>
-                  <div className="form-group">
-                    <label htmlFor="username">Имя пользователя</label>
-                    <input
-                      type="text"
-                      id="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="password">Пароль</label>
-                    <input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="password2">Подтверждение пароля</label>
-                    <input
-                      type="password"
-                      id="password2"
-                      value={password2}
-                      onChange={(e) => setPassword2(e.target.value)}
-                      required
-                    />
-                  </div>
-                  {error && <p className="error-message">{error}</p>}
-                  <button type="submit">Зарегистрироваться</button>
-                </form>
-                <p>
-                  <span onClick={() => setIsRegistering(false)} className="clickable-text">Уже есть аккаунт? Войти</span>
-                </p>
-              </>
-            ) : (
-              <>
-                <h2>Вход</h2>
-                <form onSubmit={handleLogin}>
-                  <div className="form-group">
-                    <label htmlFor="username">Имя пользователя</label>
-                    <input
-                      type="text"
-                      id="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="password">Пароль</label>
-                    <input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                  </div>
-                  {error && <p className="error-message">{error}</p>}
-                  <button type="submit">Войти</button>
-                </form>
-                <p>
-                  <span onClick={() => setIsRegistering(true)} className="clickable-text">Еще нет аккаунта? Зарегистрируйся</span>
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <AuthModal 
+        isModalOpen={isModalOpen} 
+        closeModal={closeModal} 
+        handleLogin={handleLogin} 
+        handleRegister={handleRegister} 
+      />
     </>
   );
 }
