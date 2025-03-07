@@ -7,6 +7,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');  // Добавлено поле для подтверждения пароля
   const [error, setError] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -50,25 +51,34 @@ function App() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
+  
+    if (password !== password2) {
+      setError('Пароли не совпадают');
+      return;
+    }
+  
     try {
       const { data } = await axiosInstance.post('/register/', {
         username,
         password,
       });
-
-      console.log('Регистрация успешна:', data);
-
-      // После успешной регистрации можно автоматически логинить пользователя
-      handleLogin(e);
+  
+      console.log('Успешная регистрация:', data); // Проверяем, что возвращает сервер
+  
+      setIsRegistering(false);
+      setError(null); // Очищаем ошибки, если всё прошло успешно
+  
     } catch (err) {
+      console.error('Ошибка регистрации:', err.response?.data || err.message);
+  
       if (err.response) {
-        setError(err.response.data?.message || 'Ошибка регистрации');
+        setError(err.response.data?.detail || 'Ошибка регистрации');
       } else {
         setError('Ошибка сети или сервера');
       }
     }
   };
+  
 
   return (
     <>
@@ -111,6 +121,16 @@ function App() {
                       id="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="password2">Подтверждение пароля</label>
+                    <input
+                      type="password"
+                      id="password2"
+                      value={password2}
+                      onChange={(e) => setPassword2(e.target.value)}
                       required
                     />
                   </div>
