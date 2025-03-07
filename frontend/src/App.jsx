@@ -5,12 +5,11 @@ import axiosInstance from './axiosInstance';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -21,34 +20,55 @@ function App() {
     setError('');
   };
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-        const { data } = await axiosInstance.post('/token/', { 
-            username, 
-            password 
-        });
+      const { data } = await axiosInstance.post('/token/', {
+        username,
+        password,
+      });
 
-        localStorage.setItem('access', data.access);
-        localStorage.setItem('refresh', data.refresh);
-        
-        setIsAuthenticated(true);
-        setError('');
-        closeModal();
+      localStorage.setItem('access', data.access);
+      localStorage.setItem('refresh', data.refresh);
+
+      setIsAuthenticated(true);
+      setError('');
+      closeModal();
     } catch (err) {
-        if (err.response) {
-            if (err.response.status === 401) {
-                setError('Неверный логин или пароль');
-            } else {
-                setError(err.response.data?.message || 'Ошибка входа');
-            }
+      if (err.response) {
+        if (err.response.status === 401) {
+          setError('Неверный логин или пароль');
         } else {
-            setError('Ошибка сети или сервера');
+          setError(err.response.data?.message || 'Ошибка входа');
         }
+      } else {
+        setError('Ошибка сети или сервера');
+      }
     }
-};
+  };
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      const { data } = await axiosInstance.post('/register/', {
+        username,
+        password,
+      });
+
+      console.log('Регистрация успешна:', data);
+
+      // После успешной регистрации можно автоматически логинить пользователя
+      handleLogin(e);
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data?.message || 'Ошибка регистрации');
+      } else {
+        setError('Ошибка сети или сервера');
+      }
+    }
+  };
 
   return (
     <>
@@ -62,45 +82,80 @@ function App() {
         <h1>Список фильмов</h1>
         <MoviesList />
       </div>
+
       {/* Модальное окно для входа */}
       {isModalOpen && (
-          <div className="modal">
-            <div className="modal-content">
-              <span className="close-btn" onClick={closeModal}>&times;</span>
-              <h2>Вход</h2>
-              <form onSubmit={handleSubmit}>
-                {/* Поле для имени пользователя */}
-                <div className="form-group">
-                  <label htmlFor="username">Имя пользователя</label>
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                </div>
-                {/* Поле для пароля */}
-                <div className="form-group">
-                  <label htmlFor="password">Пароль</label>
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                {/* Ошибка валидации */}
-                {error && <p className="error-message">{error}</p>}
-                {/* Кнопка для отправки формы */}
-                <button type="submit" className="submit-btn">Войти</button>
-              </form>
-            </div>
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close-btn" onClick={closeModal}>&times;</span>
+            
+            {/* Переключение между формами */}
+            {isRegistering ? (
+              <>
+                <h2>Регистрация</h2>
+                <form onSubmit={handleRegister}>
+                  <div className="form-group">
+                    <label htmlFor="username">Имя пользователя</label>
+                    <input
+                      type="text"
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="password">Пароль</label>
+                    <input
+                      type="password"
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {error && <p className="error-message">{error}</p>}
+                  <button type="submit">Зарегистрироваться</button>
+                </form>
+                <p>
+                  <span onClick={() => setIsRegistering(false)} className="clickable-text">Уже есть аккаунт? Войти</span>
+                </p>
+              </>
+            ) : (
+              <>
+                <h2>Вход</h2>
+                <form onSubmit={handleLogin}>
+                  <div className="form-group">
+                    <label htmlFor="username">Имя пользователя</label>
+                    <input
+                      type="text"
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="password">Пароль</label>
+                    <input
+                      type="password"
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {error && <p className="error-message">{error}</p>}
+                  <button type="submit">Войти</button>
+                </form>
+                <p>
+                  <span onClick={() => setIsRegistering(true)} className="clickable-text">Еще нет аккаунта? Зарегистрируйся</span>
+                </p>
+              </>
+            )}
           </div>
-        )}
+        </div>
+      )}
     </>
   );
 }
