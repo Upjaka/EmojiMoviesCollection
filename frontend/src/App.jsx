@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import "./styles/Header.css"
 import MoviesList from './components/MovieList';
 import AuthModal from './components/AuthModal';
 
@@ -90,7 +91,7 @@ function App() {
           <button className="login-btn" onClick={openModal}>Вход</button>
         </header>
       </div>
-      <div className="card">
+      <div>
         <h1>Список фильмов</h1>
         <MoviesList />
       </div>

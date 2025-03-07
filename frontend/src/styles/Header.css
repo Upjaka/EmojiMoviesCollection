@@ -1,0 +1,71 @@
+/* Стили для header */
+.header {
+    position: fixed;   /* Закрепляем header в верхней части страницы */
+    top: 0;            /* Отступ от верхней границы */
+    left: 0;           /* Отступ от левой границы */
+    width: 100%;       /* Ширина на всю страницу */
+    background-color: #333;  /* Цвет фона */
+    color: white;      /* Цвет текста */
+    padding: 20px 0;   /* Отступы сверху и снизу */
+    text-align: center; /* Центрируем текст */
+    z-index: 1000;     /* Чтобы header был поверх других элементов */
+  }
+  
+  .logo {
+    font-size: 1.5rem;   /* Размер шрифта для логотипа */
+    font-weight: bold;   /* Жирный шрифт */
+  }
+  
+  .login-btn {
+    background-color: #f0a500; /* Цвет кнопки */
+    border: none;              /* Убираем границу */
+    padding: 10px 20px;        /* Отступы внутри кнопки */
+    color: white;              /* Цвет текста */
+    cursor: pointer;           /* Курсор в виде руки */
+    font-size: 1rem;           /* Размер шрифта */
+    border-radius: 5px;        /* Скругленные углы */
+  }
+  
+  .login-btn:hover {
+    background-color: #d98800; /* Цвет кнопки при наведении */
+  }
+  
+  /* Добавим отступ для основного контента */
+  body {
+    padding-top: 80px; /* Отступ сверху, чтобы контент не накрывался header */
+  }
+  
+  .card {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 10px;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
