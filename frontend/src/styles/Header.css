@@ -1,4 +1,9 @@
-  /* Модальное окно */
+header {
+  box-shadow: 0 5px 25px rgba(0, 0, 0, .2);
+  background-color: #242424;
+}
+ 
+ /* Модальное окно */
 .modal {
   position: fixed;
   top: 0;

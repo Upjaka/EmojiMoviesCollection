@@ -49,10 +49,10 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-dark py-4">
+    <header className="py-4">
       <div className="container px-4 px-lg-5 d-flex justify-content-between align-items-center">
         <h2 className="display-4 fw-bolder text-white m-0">Emoji Films</h2>
-        <button className="btn btn-light login-btn" onClick={openModal}>
+        <button className="btn-login" onClick={openModal}>
           Вход
         </button>
       </div>
