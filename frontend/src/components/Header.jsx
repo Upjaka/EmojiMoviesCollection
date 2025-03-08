@@ -4,6 +4,8 @@ import AuthModal from "./AuthModal";
 import axiosInstance from "../axiosInstance";
 
 const Header = () => {
+  const logoSrc = "/logo.png";
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -51,9 +53,18 @@ const Header = () => {
   return (
     <header className="py-4">
       <div className="container px-4 px-lg-5 d-flex justify-content-between align-items-center">
-        <h2 className="display-4 fw-bolder text-white m-0">Emoji Films</h2>
+        <div className="d-flex align-items-center">
+        <img 
+          src={logoSrc}
+          alt="Logo" 
+          className="img-logo me-2"
+        />
+        <h3 className="display-4 fw-bolder text-title m-0">Emoji Movies</h3>
+      </div>
         <button className="btn-login" onClick={openModal}>
-          Вход
+          <span>
+            Вход
+          </span>
         </button>
       </div>
 

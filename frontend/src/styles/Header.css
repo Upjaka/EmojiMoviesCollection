@@ -90,3 +90,13 @@ form input {
 .clickable-text:hover {
   color:cadetblue;
 }
+
+.img-logo {
+  width: 8vw;
+  max-width: 60px; 
+  height: auto; 
+}
+
+.text-title {
+  color: #00BFA5 ;
+}
