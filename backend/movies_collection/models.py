@@ -3,24 +3,11 @@ from django.contrib.auth import get_user_model
 
 
 class Movie(models.Model):
-    GENRE_CHOICES = [
-        ('Action', 'Боевик'),
-        ('Comedy', 'Комедия'),
-        ('Drama', 'Драма'),
-        ('Fantasy', 'Фэнтези'),
-        ('Horror', 'Ужасы'),
-        ('Mystery', 'Мистика'),
-        ('Romance', 'Романтика'),
-        ('Sci-Fi', 'Научная фантастика'),
-        ('Thriller', 'Триллер'),
-        ('Animation', 'Анимация'),
-        ('Documentary', 'Документальный'),
-    ]
-
     title = models.CharField(max_length=255, verbose_name="Название")
     release_year = models.PositiveIntegerField(verbose_name="Год выпуска")
-    genres = models.CharField(max_length=255, choices=GENRE_CHOICES, verbose_name="Жанр")
+    genres = models.TextField(verbose_name="Жанры")
     director = models.CharField(max_length=255, blank=True, verbose_name="Режиссер")
+    poster = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return self.title

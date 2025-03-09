@@ -2,6 +2,25 @@ header {
   box-shadow: 0 5px 25px rgba(0, 0, 0, .2);
   background-color: #242424;
 }
+
+.btn-login {
+  background-color: #00ac95;
+  border: none;
+  display: block;
+  max-width: -moz-max-content;
+  max-width: max-content;
+  width: 100%;
+  box-shadow: 0 0 16px rgba(0, 150, 136, .6);
+  border-radius: 8px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+  text-align: center;
+  color: #ffffff;
+  padding: 7px 25px;
+  transition: all .5sease;
+}
  
  /* Модальное окно */
 .modal {
@@ -98,5 +117,5 @@ form input {
 }
 
 .text-title {
-  color: #00BFA5 ;
+  color: #6beec7  ;
 }
