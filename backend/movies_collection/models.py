@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 class Movie(models.Model):
     title = models.CharField(max_length=255, verbose_name="Название")
-    release_year = models.PositiveIntegerField(verbose_name="Год выпуска")
+    year = models.PositiveIntegerField(verbose_name="Год выпуска")
     genres = models.TextField(verbose_name="Жанры")
     director = models.CharField(max_length=255, blank=True, verbose_name="Режиссер")
     poster = models.URLField(null=True, blank=True)
