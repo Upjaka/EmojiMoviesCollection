@@ -10,6 +10,11 @@ const MovieList = () => {
   const [filteredMovies, setFilteredMovies] = useState([]);
   const [selectedYear, setSelectedYear] = useState("all");
 
+  const uniqueYears = [
+    "all",
+    ...new Set(movies.map((movie) => movie.year.toString()).sort((a, b) => b - a)),
+  ];
+
   useEffect(() => {
     fetch(API_URL)
       .then((response) => response.json())
@@ -32,9 +37,21 @@ const MovieList = () => {
     }
   };
 
+  const handleYearChange = (event) => {
+    const year = event.target.value;
+    setSelectedYear(year);
+    let filtered = movies;
+
+    if (year !== "all") {
+      filtered = movies.filter((movie) => movie.year.toString() === year);
+    }
+    setFilteredMovies(filtered);
+  };
+
   return (
     <div className="w-100 p-0">
-        <FiltersBar onSearch={handleSearch} />
+
+        <FiltersBar onSearch={handleSearch} onYearSelect={handleYearChange} uniqueYears={uniqueYears} />
         <div className="w-100 movies-container">
         {filteredMovies.map((movie, index) => (
             <MovieListItem key={index} {...movie} />
