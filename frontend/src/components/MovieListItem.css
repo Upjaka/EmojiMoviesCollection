@@ -1,12 +1,55 @@
 .movie-card {
+    background-color: #242424;
+    color: white;
     border-radius: 10px;
-}
-
-.movie-card-img {
+    overflow: hidden;
+    width: 250px;
+    height: 450px;
+    margin: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 172, 149, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .movie-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 25px rgba(0, 172, 149, 1);
+  }
+  
+  .movie-poster {
     width: 100%;
-    height: auto;
-    max-height: 550px; /* Можно увеличить/уменьшить */
+    height: 70%;
     object-fit: cover;
-    border-radius: 10px;
+  }
+  
+  .movie-details {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex-grow: 1;
+  }
+  
+  .movie-title-container {
+    display: flex;
+    justify-content: space-between; /* Размещаем элементы по краям */
+    align-items: center;
+  }
+  
+  .movie-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .movie-year {
+    font-size: 0.9rem;
+    color: #999;
+  }
+  
+  .movie-genres {
+    font-size: 0.8rem;
+    color: #aaa;
   }
   

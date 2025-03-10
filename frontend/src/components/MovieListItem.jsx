@@ -1,33 +1,24 @@
 import React from "react";
 import "./MovieListItem.css"
 
-const MovieCard = ({ title, year, genres, poster }) => {
-  return (
-    <div className="movie-card bg-white shadow-lg rounded-xl overflow-hidden max-w-xs">
-      {/* Постер с фиксацией размера */}
-      <div className="bg-gray-200 flex items-center justify-center">
-        {poster ? (
-          <img
-            src={poster}
-            alt={title}
-            className="movie-card-img object-cover"
-          />
-        ) : (
-          <span className="text-gray-500 text-lg">Нет постера</span>
-        )}
+const MovieListItem = ({ title, year, genres, poster }) => {
+    const genreList = genres.split(',').slice(0, 3);
+  
+    return (
+      <div className="movie-card">
+        <img src={poster} alt={title} className="movie-poster" />
+        <div className="movie-details">
+          <div className="movie-title-container">
+            <span className="movie-title">{title}</span>
+            <span className="movie-year">{year}</span>
+          </div>
+          <div className="movie-genres">
+            {genreList.join(", ")}
+          </div>
+        </div>
       </div>
+    );
+  };
+  
 
-      {/* Информация */}
-      <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-800 truncate">
-          {title} <span className="text-gray-500">({year})</span>
-        </h3>
-        <p className="text-gray-600 text-sm mt-2 truncate">
-          {genres}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-export default MovieCard;
+export default MovieListItem;
