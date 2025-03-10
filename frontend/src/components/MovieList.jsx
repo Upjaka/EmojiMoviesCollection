@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import MovieListItem from "./MovieListItem";
 import "./MovieList.css";
-import SearchBar from "./SearchBar";
+import FiltersBar from "./FiltersBar";
 
 const API_URL = "http://127.0.0.1:8000/api/movies/";
 
 const MovieList = () => {
   const [movies, setMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
+  const [selectedYear, setSelectedYear] = useState("all");
 
   useEffect(() => {
     fetch(API_URL)
@@ -33,7 +34,7 @@ const MovieList = () => {
 
   return (
     <div className="w-100 p-0">
-        <SearchBar onSearch={handleSearch} />
+        <FiltersBar onSearch={handleSearch} />
         <div className="w-100 movies-container">
         {filteredMovies.map((movie, index) => (
             <MovieListItem key={index} {...movie} />

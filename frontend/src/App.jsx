@@ -13,7 +13,7 @@ function App() {
     <>
       <Header />
 
-      <section className="py-5 w-100 h-100">
+      <section className="py-4 w-100">
         <div className="container px-4 px-lg-5">
           <div className="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
               <MovieList />

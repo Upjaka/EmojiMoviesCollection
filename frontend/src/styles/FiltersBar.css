@@ -2,6 +2,9 @@
     margin: 20px 0;
     display: flex;
     justify-content: center;
+    border: 1px solid;
+    border-color: #47e9d3;
+    border-radius: 15px;
   }
   
   .search-bar input {
@@ -9,11 +12,8 @@
     width: 300px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid #00ac95;
     outline: none;
   }
   
-  .search-bar input:focus {
-    border-color: #00ac95;
-  }
   
