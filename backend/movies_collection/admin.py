@@ -4,8 +4,8 @@ from .models import Movie, Reaction
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ('title', 'release_year', 'genres', 'director')
-    list_filter = ('genres', 'release_year')
+    list_display = ('title', 'year', 'genres', 'director', 'poster')
+    list_filter = ('genres', 'year')
     search_fields = ['title']
 
 
