@@ -29,8 +29,7 @@ class Command(BaseCommand):
                 selected_users = random.sample(users, min(num_reactions, len(users)))
 
                 for user in selected_users:
-                    for i in range(num_reactions):
-                        Reaction.objects.get_or_create(user=user, movie=movie, reaction=reaction_type)
-                        count += 1
+                    Reaction.objects.get_or_create(user=user, movie=movie, reaction=reaction_type)
+                    count += 1
 
         self.stdout.write(self.style.SUCCESS(f"Добавлено {count} случайных реакций!"))
