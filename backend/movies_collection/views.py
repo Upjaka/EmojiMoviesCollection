@@ -7,7 +7,14 @@ from .serializers import MovieSerializer
 
 @api_view(['GET'])
 def movie_list(request):
-    movies = Movie.objects.all()
+    search_query = request.GET.get('search', '')
+
+    if search_query:
+        movies = Movie.objects.filter(
+            Q(title__icontains=search_query)
+        )
+    else:
+        movies = Movie.objects.all()
 
     # Аннотируем каждый фильм количеством реакций
     movies_with_reactions = movies.annotate(
