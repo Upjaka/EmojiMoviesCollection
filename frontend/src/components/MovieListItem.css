@@ -4,7 +4,7 @@
     border-radius: 10px;
     overflow: hidden;
     width: 275px;
-    height: 450px;
+    height: 480px;
     margin: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 0 15px rgba(0, 172, 149, 0.8);
@@ -51,5 +51,25 @@
   .movie-genres {
     font-size: 0.8rem;
     color: #aaa;
+  }
+
+  .reactions-container {
+    display: flex;
+    gap: 10px; 
+    flex-wrap: wrap;
+  }
+  
+  .reaction-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .reaction-icon {
+    font-size: 20px; 
+    margin-right: 5px; 
+  }
+  
+  .reaction-count {
+    font-size: 16px;
   }
   
