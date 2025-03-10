@@ -1,0 +1,12 @@
+.movie-card {
+    border-radius: 10px;
+}
+
+.movie-card-img {
+    width: 100%;
+    height: auto;
+    max-height: 550px; /* Можно увеличить/уменьшить */
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
