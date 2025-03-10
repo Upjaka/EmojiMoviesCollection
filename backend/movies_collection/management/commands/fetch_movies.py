@@ -2,70 +2,47 @@ import requests
 from django.core.management.base import BaseCommand
 from movies_collection.models import Movie
 
-BASE_URL = "https://api.kinopoisk.dev/v1.4/movie"
+BASE_URL = "https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&selectFields=id&selectFields=externalId&selectFields=name&selectFields=enName&selectFields=type&selectFields=year&selectFields=releaseYears&selectFields=rating&selectFields=movieLength&selectFields=genres&selectFields=countries&selectFields=poster&selectFields=logo&selectFields=votes&selectFields=persons&notNullFields=name&notNullFields=enName&notNullFields=votes.kp&sortField=name&sortType=1&type=movie&status=&year=1990-2025&votes.kp=1000-9999999&persons.enProfession=director"
+
 HEADERS = {
     "accept": "application/json",
     "X-API-KEY": "E0FJS8P-3834HFY-PJ46CDK-6HTT00C"
 }
-PARAMS = {
-    "page": 1,
-    "limit": 12,
-    "selectFields": [
-        "id", "externalId", "name", "enName", "type", "year", "movieLength",
-        "genres", "countries", "poster", "votes", "persons"
-    ],
-    "notNullFields": ["name", "votes.kp", "persons.enProfession"],
-    "sortField": "votes.imdb",
-    "sortType": -1,
-    "type": "movie",
-    "year": "1990-2025",
-    "votes.kp": "1000-9999999",
-    "persons.enProfession": "director"
-}
 
-
-def fetch_movies(num_pages=1):
-    """Загружает указанное количество страниц с фильмами"""
-    all_movies = []
-    for page in range(1, num_pages + 1):
-        PARAMS["page"] = page
-        response = requests.get(BASE_URL, headers=HEADERS, params=PARAMS)
-
-        if response.status_code != 200:
-            print(f"Ошибка запроса (страница {page}):", response.status_code)
-            break
-
-        data = response.json()
-        movies = data.get("docs", [])
-        if not movies:
-            print("Фильмы закончились.")
-            break
-
-        all_movies.extend(movies)
-        print(f"Загружена страница {page}, фильмов: {len(movies)}")
-
-    return all_movies
+def fetch_movies():
+    response = requests.get(BASE_URL, headers=HEADERS)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print("Ошибка запроса:", response.status_code)
+        return None
 
 
 def extract_director(persons):
     """Ищет первого режиссера в списке persons"""
-    for person in persons or []:
+    if not persons:
+        return ""  # Если список пустой, возвращаем пустую строку
+    for person in persons:
         if person.get("enProfession") == "director":
             return person.get("name", "")
-    return ""
+    return ""  # Если режиссер не найден, возвращаем пустую строку
 
 
 def save_movies_to_db(movies_data):
     for movie_data in movies_data:
         title = movie_data.get("name")
         release_year = movie_data.get("year")
-        genres_text = ', '.join([genre['name'] for genre in movie_data.get("genres", [])])
+
+        genres = movie_data.get("genres", [])
+        genres_text = ', '.join([genre['name'] for genre in genres])  # Список жанров в строку
+
         poster_url = movie_data.get("poster", {}).get("url")
-        director = extract_director(movie_data.get("persons", []))
+
+        director = extract_director(movie_data.get("persons", []))  # Извлекаем режиссера
 
         movie, created = Movie.objects.get_or_create(
             title=title,
-            year=release_year,
+            release_year=release_year,
             defaults={
                 "genres": genres_text,
                 "director": director,
@@ -82,12 +59,8 @@ def save_movies_to_db(movies_data):
 class Command(BaseCommand):
     help = "Fetch movies from Kinopoisk API and save them to the database."
 
-    def add_arguments(self, parser):
-        parser.add_argument("num_pages", type=int, nargs="?", default=1, help="Количество страниц для загрузки")
-
-    def handle(self, *args, **options):
-        num_pages = options["num_pages"]
-        movies_data = fetch_movies(num_pages)
+    def handle(self, *args, **kwargs):
+        movies_data = fetch_movies()
         if movies_data:
-            save_movies_to_db(movies_data)
-            self.stdout.write(self.style.SUCCESS(f"Загружено {len(movies_data)} фильмов в базу!"))
+            save_movies_to_db(movies_data.get("docs", []))
+            self.stdout.write(self.style.SUCCESS("Фильмы загружены в базу!"))
