@@ -23,7 +23,7 @@ const MovieCard = ({ title, year, genres, poster }) => {
           {title} <span className="text-gray-500">({year})</span>
         </h3>
         <p className="text-gray-600 text-sm mt-2 truncate">
-          {genres.join(', ')}
+          {genres}
         </p>
       </div>
     </div>

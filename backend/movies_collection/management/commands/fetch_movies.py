@@ -1,6 +1,7 @@
 import requests
 from django.core.management.base import BaseCommand
-from movies_collection.models import Movie
+
+from backend.movies_collection.models import Movie
 
 BASE_URL = "https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&selectFields=id&selectFields=externalId&selectFields=name&selectFields=enName&selectFields=type&selectFields=year&selectFields=releaseYears&selectFields=rating&selectFields=movieLength&selectFields=genres&selectFields=countries&selectFields=poster&selectFields=logo&selectFields=votes&selectFields=persons&notNullFields=name&notNullFields=enName&notNullFields=votes.kp&sortField=name&sortType=1&type=movie&status=&year=1990-2025&votes.kp=1000-9999999&persons.enProfession=director"
 

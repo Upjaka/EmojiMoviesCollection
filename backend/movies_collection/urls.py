@@ -1,12 +1,7 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .api_views import MovieViewSet, ReactionViewSet
-
-# Настройка роутера
-router = DefaultRouter()
-router.register(r'movies', MovieViewSet)
-router.register(r'reactions', ReactionViewSet)
+from django.urls import path
+from .views import movie_list
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    # path("api/", include(router.urls)),
+    path("api/movies/", movie_list, name="movie_list")
 ]
