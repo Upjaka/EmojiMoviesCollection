@@ -2,7 +2,7 @@ import React from "react";
 import "./MovieListItem.css";
 
 const MovieListItem = ({ title, year, genres, poster, reactions_count }) => {
-  const genreList = genres.split(',').slice(0, 3);
+  const genreList = genres.split(',');
 
   const emojiMap = {
     like: '👍',
@@ -33,7 +33,7 @@ const MovieListItem = ({ title, year, genres, poster, reactions_count }) => {
           <span className="movie-year">{year}</span>
         </div>
         <div className="movie-genres">
-          {genreList.join(", ")}
+          {(genreList.length > 3) ? genreList.slice(0, 3).join(", ") + " и др." : genreList.join(", ")}
         </div>
 
         <div className="movie-reactions">
