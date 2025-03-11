@@ -1,4 +1,4 @@
-.search-bar {
+  .search-bar {
     margin: 20px 0;
     display: flex;
     justify-content: center;
@@ -17,6 +17,12 @@
   }
 
   .year-select {
+    background-color: inherit;
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
+
+  .year-select:hover {
     border-radius: 5px;
     border: 1px solid #00ac95;
   }
@@ -34,30 +40,37 @@
     overflow-y: auto;
   }
 
-  /* Стили для каждой строки с чекбоксом и текстом */
   .dropdown-item {
     display: flex;
     align-items: center;
-    padding: 8px 15px; /* Отступы внутри каждой строки */
+    padding: 8px 15px; 
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
 
-  /* Стили для текста жанра */
   .dropdown-item label {
-    margin-left: 8px; /* Отступ между чекбоксом и текстом */
-    color: white; /* Темный цвет текста */
+    margin-left: 8px;
+    color: white; 
     font-size: 16px;
   }
 
-  /* Эффект наведения на строку */
   .dropdown-item:hover {
-    background-color: #383841; /* Светлый фон при наведении */
+    background-color: #383841;
   }
 
-  /* Стили для чекбокса */
   .form-check-input {
-    width: 20px; /* Увеличим размер чекбокса */
+    width: 20px;
     height: 20px;
-    margin: 0; /* Убираем лишние отступы */
+    margin: 0;
+  }
+
+  .btn-select-genres {
+    background-color: inherit;
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
+
+  .btn-select-genres:hover {
+    border-radius: 5px;
+    border: 1px solid #00ac95;
   }

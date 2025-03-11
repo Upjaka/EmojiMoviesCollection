@@ -50,7 +50,7 @@ const FiltersBar = ({ onSearch, onYearSelect, uniqueYears, onGenresSelect, genre
       </div>
       <div className="d-flex col-lg-6">
         <div className="d-flex filter-wrapper col-lg-6 align-items-center justify-content-center">
-          <select value={selectedYear} onChange={handleYearChange} className="year-select p-2">
+          <select value={selectedYear} onChange={handleYearChange} className="btn btn-secondary year-select p-2">
             {uniqueYears.map((year) => (
               <option key={year} value={year}>
                 {year === "all" ? "Все годы" : year}
@@ -60,7 +60,7 @@ const FiltersBar = ({ onSearch, onYearSelect, uniqueYears, onGenresSelect, genre
         </div>
 
         <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownGenresButton" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-secondary btn-select-genres dropdown-toggle" type="button" id="dropdownGenresButton" data-bs-toggle="dropdown" aria-expanded="false">
             Выбор жанра
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownGenresButton">
