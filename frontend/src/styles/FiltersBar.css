@@ -1,0 +1,76 @@
+  .search-bar {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    border: 1px solid;
+    border-color: #47e9d3;
+    border-radius: 15px;
+  }
+  
+  .search-input {
+    padding: 10px;
+    width: 300px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+    outline: none;
+  }
+
+  .year-select {
+    background-color: inherit;
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
+
+  .year-select:hover {
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
+  
+  .genres-select {
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
+  
+  .dropdown-menu {
+    background-color: #242424;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-height: 350px;
+    overflow-y: auto;
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px; 
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .dropdown-item label {
+    margin-left: 8px;
+    color: white; 
+    font-size: 16px;
+  }
+
+  .dropdown-item:hover {
+    background-color: #383841;
+  }
+
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+
+  .btn-select-genres {
+    background-color: inherit;
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
+
+  .btn-select-genres:hover {
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
