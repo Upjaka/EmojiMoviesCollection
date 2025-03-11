@@ -7,7 +7,7 @@
     border-radius: 15px;
   }
   
-  .search-bar input {
+  .search-input {
     padding: 10px;
     width: 300px;
     font-size: 16px;
@@ -15,5 +15,33 @@
     border: 1px solid #00ac95;
     outline: none;
   }
+
+  .year-select {
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
   
+  .genres-select {
+    border-radius: 5px;
+    border: 1px solid #00ac95;
+  }
   
+  .genre-list {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+    padding: 5px;
+    border: 1px solid #00ac95;
+    border-radius: 5px;
+    background: #242424;
+  }
+  
+  .genre-item {
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
