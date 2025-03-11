@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import qs from "qs";
 
-// Асинхронный запрос для загрузки фильмов
 export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
   const response = await fetch("http://127.0.0.1:8000/api/movies/");
   const data = await response.json();
@@ -45,11 +44,17 @@ const moviesSlice = createSlice({
       moviesSlice.caseReducers.updateUrlParams(state);
     },
     setFiltersFromUrl: (state, action) => {
-      state.searchText = action.payload.search || "";
-      state.selectedYear = action.payload.year || "all";
-      state.selectedGenres = action.payload.genres || [];
-      moviesSlice.caseReducers.filterMovies(state);
-    },
+        state.searchText = action.payload.search || "";
+        state.selectedYear = action.payload.year || "all";
+      
+        state.selectedGenres = action.payload.genres
+          ? Array.isArray(action.payload.genres)
+            ? action.payload.genres
+            : [action.payload.genres]
+          : [];
+      
+        moviesSlice.caseReducers.filterMovies(state);
+      },
     updateUrlParams: (state) => {
       const queryParams = qs.stringify(
         {
@@ -67,6 +72,7 @@ const moviesSlice = createSlice({
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
       state.movies = action.payload;
       state.filteredMovies = action.payload;
+      moviesSlice.caseReducers.filterMovies(state);
     });
   },
 });

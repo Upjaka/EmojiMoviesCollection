@@ -10,7 +10,7 @@ import { fetchMovies, setFiltersFromUrl } from "../store/moviesSlice";
 const MovieList = () => {
   const dispatch = useDispatch();
 
-  const { movies, filteredMovies, searchText, selectedYear, selectedGenres } = useSelector(
+  const { filteredMovies} = useSelector(
     (state) => state.movies
   );
 
@@ -25,6 +25,7 @@ const MovieList = () => {
         arrayFormat: "comma",
       });
       dispatch(setFiltersFromUrl(params));
+      console.log(params)
     }
   }, [dispatch]);
 
