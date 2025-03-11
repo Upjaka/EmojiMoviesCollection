@@ -11,6 +11,8 @@ function App() {
 
   return (
     <>
+    <div className='wrapper'>
+      <div className='content'>
       <Header />
 
       <section className="py-4 w-100">
@@ -20,8 +22,11 @@ function App() {
           </div>
         </div>
       </section>
-
-      <Footer />
+      </div>
+      <div className='footer-wrapper'>
+        <Footer />
+      </div>
+    </div>
     </>
   );
 }

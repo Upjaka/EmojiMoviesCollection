@@ -16,6 +16,19 @@ html, body {
   flex-direction: column;
 }
 
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
+.footer-wrapper {
+  flex: 0 0 auto;
+}
+
 section {
   background-color: #2b2b31;
 }
