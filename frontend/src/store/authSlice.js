@@ -1,26 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../axiosInstance";
 
-// Асинхронный action для логина
 export const login = createAsyncThunk(
   "auth/login",
   async ({ username, password }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/token/", { username, password });
-      return response.data; // Успешный ответ
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Ошибка входа");
     }
   }
 );
 
-// Асинхронный action для регистрации
 export const register = createAsyncThunk(
   "auth/register",
   async ({ username, password }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/register/", { username, password });
-      return response.data; // Успешный ответ
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.detail || "Ошибка регистрации");
     }

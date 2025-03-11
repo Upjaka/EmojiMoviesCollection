@@ -13,7 +13,6 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(config => {
     const token = localStorage.getItem('access');
 
-    // Исключаем запросы на регистрацию и вход
     if (!config.url.includes('/register/') && !config.url.includes('/login/')) {
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -24,7 +23,6 @@ axiosInstance.interceptors.request.use(config => {
 }, error => Promise.reject(error));
 
 
-// Функция для обновления токенов
 const refreshTokens = async () => {
     try {
       const refreshToken = localStorage.getItem('refresh');
@@ -32,32 +30,28 @@ const refreshTokens = async () => {
       
       const response = await axios.post('/token/refresh/', { refresh: refreshToken });
       
-      // Сохраняем новые токены
       localStorage.setItem('access', response.data.access);
       localStorage.setItem('refresh', response.data.refresh);
       
-      return response.data.access; // Возвращаем новый access token
+      return response.data.access;
     } catch (err) {
       console.error('Ошибка обновления токенов', err);
       return null;
     }
   };
   
-  // Перехватчик для обработки истекших токенов
   axiosInstance.interceptors.response.use(
     response => response,
     async error => {
       if (error.response && error.response.status === 401 && error.response.data.message === 'Token is expired') {
-        // Если токен истек, пробуем обновить токен
         const newAccessToken = await refreshTokens();
         
         if (newAccessToken) {
-          // Повторяем запрос с новым access token
           error.config.headers['Authorization'] = `Bearer ${newAccessToken}`;
-          return axios(error.config); // Повторяем запрос с новым токеном
+          return axios(error.config);
         }
       }
-      return Promise.reject(error); // Если ошибка не из-за истекшего токена, отдаем ошибку
+      return Promise.reject(error);
     }
   );
 
