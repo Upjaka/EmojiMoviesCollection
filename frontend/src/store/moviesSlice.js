@@ -10,10 +10,26 @@ export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
 const initialState = {
   movies: [],
   filteredMovies: [],
+  loadedMovies: [],
   searchText: "",
   selectedYear: "all",
   selectedGenres: [],
+  moviesPerLoad: 8,
 };
+
+export const loadMoreMoviesAsync = createAsyncThunk(
+  "movies/loadMoreMovies",
+  async (_, { getState }) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const state = getState().movies;
+        const currentLength = state.loadedMovies.length;
+        const nextMovies = state.filteredMovies.slice(currentLength, currentLength + state.moviesPerLoad);
+        resolve(nextMovies);
+      }, 1000);
+    });
+  }
+);
 
 const moviesSlice = createSlice({
   name: "movies",
@@ -42,6 +58,12 @@ const moviesSlice = createSlice({
         );
       });
       moviesSlice.caseReducers.updateUrlParams(state);
+      state.loadedMovies = state.filteredMovies.slice(0, state.moviesPerLoad);
+    },
+    loadMoreMovies: (state) => {
+        const currentLength = state.loadedMovies.length;
+        const nextMovies = state.filteredMovies.slice(currentLength, currentLength + state.moviesPerLoad);
+        state.loadedMovies = [...state.loadedMovies, ...nextMovies];
     },
     setFiltersFromUrl: (state, action) => {
         state.searchText = action.payload.search || "";
@@ -74,6 +96,9 @@ const moviesSlice = createSlice({
       state.filteredMovies = action.payload;
       moviesSlice.caseReducers.filterMovies(state);
     });
+    builder.addCase(loadMoreMoviesAsync.fulfilled, (state, action) => {
+      state.loadedMovies = [...state.loadedMovies, ...action.payload];
+    });
   },
 });
 
@@ -82,5 +107,6 @@ export const {
   setSelectedYear,
   setSelectedGenres,
   setFiltersFromUrl,
+  loadMoreMovies
 } = moviesSlice.actions;
 export default moviesSlice.reducer;
