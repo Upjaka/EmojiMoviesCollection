@@ -1,41 +1,39 @@
-import React, { useState } from "react";
-import { Dropdown, DropdownButton, DropdownItem } from "react-bootstrap";
-import "../styles/FiltersBar.css";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSearchText,
+  setSelectedYear,
+  setSelectedGenres,
+} from "../store/moviesSlice";
 
-const FiltersBar = ({ onSearch, onYearSelect, uniqueYears, onGenresSelect, genresList }) => {
-  const [searchText, setSearchText] = useState("");
-  const [selectedYear, setSelectedYear] = useState("all");
-  const [selectedGenres, setSelectedGenres] = useState([]);
-  const [showGenreDropdown, setShowGenreDropdown] = useState(false);  // Состояние для показа/скрытия списка жанров
+import "../styles/FiltersBar.css"
 
-  const handleInputChange = (e) => {
-    setSearchText(e.target.value);
-    onSearch(e.target.value);
+const FiltersBar = () => {
+  const dispatch = useDispatch();
+  const { searchText, selectedYear, selectedGenres } = useSelector((state) => state.movies);
+
+  const uniqueYears = ["all", ...Array.from({ length: 2025 - 1990 + 1 }, (_, i) => (1990 + i).toString())];
+
+  const genresList = [
+    "триллер", "фантастика", "драма", "детектив", "биография",
+    "история", "военный", "боевик", "криминал", "ужасы",
+    "приключения", "комедия", "вестерн", "фэнтези"
+  ];
+
+  const handleSearch = (e) => {
+    dispatch(setSearchText(e.target.value));
   };
 
   const handleYearChange = (e) => {
-    setSelectedYear(e.target.value);
-    onYearSelect(e.target.value);
+    dispatch(setSelectedYear(e.target.value));
   };
 
-  const handleGenreSelect = (genre) => {
-    setSelectedGenres((prev) => {
-      if (prev.includes(genre)) {
-        return prev.filter((g) => g !== genre); // Убираем жанр, если он уже был выбран
-      } else {
-        return [...prev, genre]; // Добавляем жанр в список выбранных
-      }
-    });
-  };
+  const handleGenreChange = (genre) => {
+    const updatedGenres = selectedGenres.includes(genre)
+      ? selectedGenres.filter((g) => g !== genre)
+      : [...selectedGenres, genre];
 
-  const handleGenreDropdownToggle = () => {
-    setShowGenreDropdown((prev) => !prev); // Переключаем видимость списка жанров
+    dispatch(setSelectedGenres(updatedGenres));
   };
-
-  // Обновляем выбранные жанры в родительском компоненте
-  React.useEffect(() => {
-    onGenresSelect(selectedGenres);
-  }, [selectedGenres, onGenresSelect]);
 
   return (
     <div className="search-bar p-4 align-items-center">
@@ -45,7 +43,7 @@ const FiltersBar = ({ onSearch, onYearSelect, uniqueYears, onGenresSelect, genre
           type="text"
           placeholder="Поиск по названию..."
           value={searchText}
-          onChange={handleInputChange}
+          onChange={handleSearch}
         />
       </div>
       <div className="d-flex col-lg-6">
@@ -59,11 +57,11 @@ const FiltersBar = ({ onSearch, onYearSelect, uniqueYears, onGenresSelect, genre
           </select>
         </div>
 
-        <div class="dropdown">
-          <button class="btn btn-secondary btn-select-genres dropdown-toggle" type="button" id="dropdownGenresButton" data-bs-toggle="dropdown" aria-expanded="false">
+        <div className="dropdown">
+          <button className="btn btn-secondary btn-select-genres dropdown-toggle" type="button" id="dropdownGenresButton" data-bs-toggle="dropdown" aria-expanded="false">
             Выбор жанра
           </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownGenresButton">
+          <ul className="dropdown-menu" aria-labelledby="dropdownGenresButton">
             {genresList.map((genre) => (
                 <li>
                   <div key={genre} className="dropdown-item">
@@ -72,7 +70,7 @@ const FiltersBar = ({ onSearch, onYearSelect, uniqueYears, onGenresSelect, genre
                       className="form-check-input"
                       id={`genre-${genre}`}
                       checked={selectedGenres.includes(genre)}
-                      onChange={() => handleGenreSelect(genre)}
+                      onChange={() => handleGenreChange(genre)}
                     />
                     <label className="" htmlFor={`genre-${genre}`}>
                       {genre}
