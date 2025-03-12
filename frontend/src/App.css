@@ -37,6 +37,6 @@ section {
   flex-grow: 1;
 }
 
-.ml-5 {
-  margin-left: 3.5rem;
+.text-white {
+  color: white;
 }

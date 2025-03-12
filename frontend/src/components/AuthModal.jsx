@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
-// Модальное окно для успешной регистрации
 const SuccessModal = ({ show, onHide }) => (
   <Modal show={show} onHide={onHide} centered>
     <Modal.Header closeButton>
@@ -41,7 +40,7 @@ const AuthModal = ({ isModalOpen, closeModal, isRegistering, setIsRegistering, h
         return;
       }
       await handleRegister(username, password);
-      setIsSuccessModalOpen(true); // Показываем окно успеха
+      setIsSuccessModalOpen(true);
     } else {
       await handleLogin(username, password);
     }
@@ -49,7 +48,6 @@ const AuthModal = ({ isModalOpen, closeModal, isRegistering, setIsRegistering, h
 
   return (
     <>
-      {/* Модальное окно для входа и регистрации */}
       <Modal show={isModalOpen} onHide={closeModal} centered>
         <Modal.Header closeButton>
           <Modal.Title>{isRegistering ? "Регистрация" : "Вход"}</Modal.Title>
@@ -112,7 +110,6 @@ const AuthModal = ({ isModalOpen, closeModal, isRegistering, setIsRegistering, h
         </Modal.Footer>
       </Modal>
 
-      {/* Модальное окно успеха */}
       <SuccessModal show={isSuccessModalOpen} onHide={closeSuccessModal} />
     </>
   );
