@@ -26,11 +26,11 @@ export const register = createAsyncThunk(
 );
 
 const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: !!localStorage.getItem("accessToken"),
   isRegistered: false,
   error: null,
-  accessToken: null,
-  refreshToken: null,
+  accessToken: localStorage.getItem("accessToken") || null,
+  refreshToken: localStorage.getItem("refreshToken") || null,
 };
 
 const authSlice = createSlice({
@@ -41,6 +41,8 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.accessToken = null;
       state.refreshToken = null;
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     },
   },
   extraReducers: (builder) => {
@@ -50,6 +52,9 @@ const authSlice = createSlice({
         state.accessToken = action.payload.access;
         state.refreshToken = action.payload.refresh;
         state.error = null;
+
+        localStorage.setItem("accessToken", action.payload.access);
+        localStorage.setItem("refreshToken", action.payload.refresh);
       })
       .addCase(login.rejected, (state, action) => {
         state.error = action.payload;

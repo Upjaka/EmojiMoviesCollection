@@ -36,7 +36,7 @@ const FiltersBar = () => {
   };
 
   return (
-    <div className="search-bar p-4 align-items-center">
+    <div className="search-bar p-3 align-items-center">
       <div className="col-lg-6 justify-content-start ml-5">
         <input
           className="search-input"
