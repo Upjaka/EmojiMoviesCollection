@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Modal } from "react-bootstrap";
 import { setSelectedMovie } from "../store/moviesSlice";
 import axiosInstance from "../axiosInstance";
+import { fetchUserReactions } from "../store/userReactionsSlice";
 
 import "../styles/modal.css";
 import "../styles/MovieModal.css";
@@ -11,22 +12,13 @@ import "../styles/MovieModal.css";
 const MovieModal = () => {
   const dispatch = useDispatch();
   const selectedMovie = useSelector((state) => state.movies.selectedMovie);
-  const [userReactions, setUserReactions] = useState([]);
+  const userReactions = useSelector((state) => state.userReactions.reactions);
 
   useEffect(() => {
     if (selectedMovie) {
-      const fetchReactions = async () => {
-        try {
-          const response = await axiosInstance.get("/reactions/");
-          setUserReactions(response.data);
-        } catch (error) {
-          console.error("Ошибка при загрузке реакций пользователя:", error);
-        }
-      };
-
-      fetchReactions();
+      dispatch(fetchUserReactions());
     }
-  }, [selectedMovie]);
+  }, [selectedMovie, dispatch]);
 
   const handleClose = () => {
     dispatch(setSelectedMovie(null));

@@ -4,6 +4,7 @@ import AuthModal from "./AuthModal";
 import ProfileModal from "./ProfileModal";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout, register } from "../store/authSlice";
+import { fetchUserReactions } from "../store/userReactionsSlice";
 
 const Header = () => {
   const logoSrc = "/logo.png";
@@ -54,6 +55,7 @@ const Header = () => {
   };
 
   const openProfileModal = () => {
+    dispatch(fetchUserReactions());
     setIsProfileModalOpen(true);
   };
 

@@ -1,0 +1,53 @@
+.favorites-movies {
+    font-size: 20px;
+}
+
+.favorites-movies-title {
+    font-weight: bold;
+}
+
+.favorites-movies-list {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.movie-preview {
+    width: 200px; /* Ширина карточки */
+    height: 370px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    background-color: #242424;
+    border: 2px solid #00ac95;
+    border-radius: 10px;
+    overflow: hidden;
+    padding-top: 4px;
+  }
+  
+  .preview-movie-poster {
+    width: 100%;
+    height: 290px;
+    object-fit: cover;
+    flex-grow: 1;
+  }
+  
+  .preview-movie-info {
+    padding: 10px;
+    text-align: center;
+    color: white;
+  }
+
+  .preview-reaction-icons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .preview-reaction-icon {
+    font-size: 20px;
+  }
+  
