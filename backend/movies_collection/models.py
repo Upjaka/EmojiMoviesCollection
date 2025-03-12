@@ -43,3 +43,10 @@ class Reaction(models.Model):
     class Meta:
         verbose_name = "Reactions"
         verbose_name_plural = "Reactions"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "movie", "reaction"],
+                name="unique_user_movie_reaction"
+            )
+        ]

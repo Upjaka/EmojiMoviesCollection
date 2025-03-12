@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Movie
+from .models import Movie, Reaction
+
 
 class MovieSerializer(serializers.ModelSerializer):
     reactions_count = serializers.SerializerMethodField()
@@ -27,3 +28,23 @@ class MovieSerializer(serializers.ModelSerializer):
             'fire': obj.fire_count,
             'ghost': obj.ghost_count
         }
+
+
+class ReactionSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Reaction
+        fields = ['id', 'user', 'movie', 'reaction']
+
+    def validate(self, data):
+        user = self.context["request"].user  # Получаем пользователя из запроса
+        movie = data["movie"]
+        reaction_type = data["reaction"]
+
+        if Reaction.objects.filter(user=user, movie=movie, reaction=reaction_type).exists():
+            raise serializers.ValidationError(
+                {"non_field_errors": ["Вы уже оставили такую же реакцию на этот фильм."]}
+            )
+
+        return data

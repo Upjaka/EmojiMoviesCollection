@@ -15,6 +15,7 @@ const initialState = {
   selectedYear: "all",
   selectedGenres: [],
   moviesPerLoad: 8,
+  selectedMovie: null,
 };
 
 export const loadMoreMoviesAsync = createAsyncThunk(
@@ -46,6 +47,9 @@ const moviesSlice = createSlice({
     setSelectedGenres: (state, action) => {
       state.selectedGenres = action.payload;
       moviesSlice.caseReducers.filterMovies(state);
+    },
+    setSelectedMovie: (state, action) => {
+      state.selectedMovie = action.payload;
     },
     filterMovies: (state) => {
       state.filteredMovies = state.movies.filter((movie) => {
@@ -106,6 +110,7 @@ export const {
   setSearchText,
   setSelectedYear,
   setSelectedGenres,
+  setSelectedMovie,
   setFiltersFromUrl,
   loadMoreMovies
 } = moviesSlice.actions;
