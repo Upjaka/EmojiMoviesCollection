@@ -5,6 +5,7 @@ import qs from "qs";
 import MovieListItem from "./MovieListItem";
 import "./MovieList.css";
 import FiltersBar from "./FiltersBar";
+import MovieModal from "./MovieModal";
 import { fetchMovies, setFiltersFromUrl, loadMoreMovies, loadMoreMoviesAsync } from "../store/moviesSlice";
 import { Spinner } from "react-bootstrap";
 
@@ -61,6 +62,7 @@ const MovieList = () => {
           <Spinner animation="border" variant="primary" />
         </div>
       )}
+      <MovieModal />
     </div>
   );
 };

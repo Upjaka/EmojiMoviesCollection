@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { useDispatch } from "react-redux";
+import { setSelectedMovie } from "../store/moviesSlice";
+
 import "./MovieListItem.css";
 
-const MovieListItem = ({ title, year, genres, poster, reactions_count }) => {
+const MovieListItem = ({ id, title, year, genres, poster, reactions_count }) => {
+  
   const genreList = genres.split(',');
 
   const emojiMap = {
@@ -24,8 +28,14 @@ const MovieListItem = ({ title, year, genres, poster, reactions_count }) => {
 
   const topReactions = Object.entries(reactions_count).slice(0, 4);
 
+  const dispatch = useDispatch();
+
+  const handleClick = useCallback(() => {
+    dispatch(setSelectedMovie({ id, title, year, genres }));
+  }, [dispatch, id, title, year, genres]);
+
   return (
-    <div className="movie-card">
+    <div className="movie-card" onClick={handleClick}>
       <img src={poster} alt={title} className="movie-poster" />
       <div className="movie-details">
         <div className="movie-title-container">
