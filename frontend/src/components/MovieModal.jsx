@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal, Button } from "react-bootstrap";
 import { setSelectedMovie } from "../store/moviesSlice";
@@ -11,6 +11,22 @@ import "../styles/MovieModal.css";
 const MovieModal = () => {
   const dispatch = useDispatch();
   const selectedMovie = useSelector((state) => state.movies.selectedMovie);
+  const [userReactions, setUserReactions] = useState([]);
+
+  useEffect(() => {
+    if (selectedMovie) {
+      const fetchReactions = async () => {
+        try {
+          const response = await axiosInstance.get("/reactions/");
+          setUserReactions(response.data);
+        } catch (error) {
+          console.error("Ошибка при загрузке реакций пользователя:", error);
+        }
+      };
+
+      fetchReactions();
+    }
+  }, [selectedMovie]);
 
   const handleClose = () => {
     dispatch(setSelectedMovie(null));
@@ -36,6 +52,13 @@ const MovieModal = () => {
     } catch (error) {
       console.error("Ошибка при отправке реакции:", error);
     }
+  };
+
+  const isUserReaction = (reaction) => {
+    return userReactions.some(
+      (reactionObj) =>
+        reactionObj.movie === selectedMovie.id && reactionObj.reaction === reaction
+    );
   };
 
   const emojiMap = {
@@ -79,7 +102,11 @@ const MovieModal = () => {
       <Modal.Footer>
         <div className="modal-reactions-container">
             {Object.entries(selectedMovie.reactions_count).map(([reaction, count]) => (
-                <div key={reaction} className="modal-reaction-item" onClick={() => handleReactionClick(reaction)}>
+                <div 
+                    key={reaction}
+                    className={`modal-reaction-item ${isUserReaction(reaction) ? "selected" : ""}`}
+                    onClick={() => handleReactionClick(reaction)}
+                >
                     <span className="modal-reaction-icon">{emojiMap[reaction]}</span>
                     <span className="modal-reaction-count">{count}</span>
                 </div>
