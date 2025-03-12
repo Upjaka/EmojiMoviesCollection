@@ -1,0 +1,11 @@
+.reaction-item {
+    padding: 4px 10px 4px 10px;
+    border-radius: 15px;
+    border: 1px solid #00ac95;
+    gap: 1px;
+    cursor: pointer;
+}
+
+.reaction-item:hover {
+    background-color: #4c4c52;
+}

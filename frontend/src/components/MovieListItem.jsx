@@ -2,9 +2,9 @@ import React, { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { setSelectedMovie } from "../store/moviesSlice";
 
-import "./MovieListItem.css";
+import "../styles/MovieListItem.css";
 
-const MovieListItem = ({ id, title, year, genres, poster, reactions_count }) => {
+const MovieListItem = ({ id, title, year, genres, director, poster, reactions_count }) => {
   
   const genreList = genres.split(',');
 
@@ -31,8 +31,8 @@ const MovieListItem = ({ id, title, year, genres, poster, reactions_count }) => 
   const dispatch = useDispatch();
 
   const handleClick = useCallback(() => {
-    dispatch(setSelectedMovie({ id, title, year, genres }));
-  }, [dispatch, id, title, year, genres]);
+    dispatch(setSelectedMovie({ id, title, year, poster, genres, director, reactions_count }));
+  }, [dispatch, id, title, year, poster, genres, director, reactions_count]);
 
   return (
     <div className="movie-card" onClick={handleClick}>

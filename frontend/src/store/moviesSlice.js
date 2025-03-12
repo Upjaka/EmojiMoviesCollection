@@ -49,7 +49,6 @@ const moviesSlice = createSlice({
       moviesSlice.caseReducers.filterMovies(state);
     },
     setSelectedMovie: (state, action) => {
-      console.log(state.selectedMovie);
       state.selectedMovie = action.payload;
     },
     filterMovies: (state) => {
