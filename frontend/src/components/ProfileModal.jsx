@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import axiosInstance from "../axiosInstance";
 
 const ProfileModal = ({ isModalOpen, closeModal }) => {
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -15,12 +16,15 @@ const ProfileModal = ({ isModalOpen, closeModal }) => {
     }
 
     try {
-      const response = await axiosInstance.post("/api/change-password/", {
+      const response = await axiosInstance.post("/change-password/", {
+        current_password: currentPassword,
         new_password: newPassword,
+        confirm_new_password: confirmPassword,
       });
 
       if (response.status === 200) {
         setSuccess("Пароль успешно изменен!");
+        setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
         setError("");
@@ -47,7 +51,20 @@ const ProfileModal = ({ isModalOpen, closeModal }) => {
           {error && <p className="text-danger">{error}</p>}
           {success && <p className="text-success">{success}</p>}
 
+
+          <Form.Group className="mb-3" controlId="formCurrentPassword">
+            
+            <Form.Label>Текущий пароль</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Введите текущий пароль"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+          </Form.Group>
+
           <Form.Group className="mb-3" controlId="formNewPassword">
+            
             <Form.Label>Новый пароль</Form.Label>
             <Form.Control
               type="password"

@@ -54,11 +54,11 @@ const Header = () => {
   };
 
   const openProfileModal = () => {
-    setIsProfileModalOpen(true); // открываем модальное окно профиля
+    setIsProfileModalOpen(true);
   };
 
   const closeProfileModal = () => {
-    setIsProfileModalOpen(false); // закрываем модальное окно профиля
+    setIsProfileModalOpen(false);
   };
 
   return (

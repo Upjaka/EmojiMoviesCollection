@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
@@ -26,3 +27,15 @@ class RegisterSerializer(serializers.ModelSerializer):
             is_staff = True,
         )
         return user
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, min_length=3)
+    confirm_new_password = serializers.CharField(write_only=True, min_length=3)
+
+    def validate(self, data):
+        # Проверка, что новый пароль и подтвержденный пароль совпадают
+        if data["new_password"] != data["confirm_new_password"]:
+            raise ValidationError("Пароли не совпадают.")
+        return data
