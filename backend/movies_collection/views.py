@@ -73,7 +73,7 @@ def movie_list(request):
 
 
 class ReactionListCreateView(generics.ListCreateAPIView):
-    queryset = Reaction.objects.all()  # Список всех реакций
+    queryset = Reaction.objects.all()
     serializer_class = ReactionSerializer
     permission_classes = [IsAuthenticated]
 

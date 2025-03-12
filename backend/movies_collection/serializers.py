@@ -40,9 +40,9 @@ class ReactionSerializer(serializers.ModelSerializer):
     def validate(self, data):
         user = self.context["request"].user  # Получаем пользователя из запроса
         movie = data["movie"]
-        reaction_type = data["reaction_type"]
+        reaction_type = data["reaction"]
 
-        if Reaction.objects.filter(user=user, movie=movie, reaction_type=reaction_type).exists():
+        if Reaction.objects.filter(user=user, movie=movie, reaction=reaction_type).exists():
             raise serializers.ValidationError(
                 {"non_field_errors": ["Вы уже оставили такую же реакцию на этот фильм."]}
             )
