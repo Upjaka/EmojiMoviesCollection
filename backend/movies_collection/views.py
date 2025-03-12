@@ -72,10 +72,15 @@ def movie_list(request):
     return Response(movie_data)
 
 
-class CreateReactionView(generics.CreateAPIView):
-    queryset = Reaction.objects.all()
+class ReactionListCreateView(generics.ListCreateAPIView):
+    queryset = Reaction.objects.all()  # Список всех реакций
     serializer_class = ReactionSerializer
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
+        # Добавляем текущего пользователя как создателя реакции
         serializer.save(user=self.request.user)
+
+    # Переопределение метода для фильтрации реакций по текущему пользователю
+    def get_queryset(self):
+        return Reaction.objects.filter(user=self.request.user)
