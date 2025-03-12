@@ -35,6 +35,7 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+    window.location.reload();
   };
 
   const handleRegister = async (username, password, setError) => {
