@@ -6,7 +6,7 @@ import MovieListItem from "./MovieListItem";
 import "../styles/MovieList.css";
 import FiltersBar from "./FiltersBar";
 import MovieModal from "./MovieModal";
-import { fetchMovies, setFiltersFromUrl, loadMoreMovies, loadMoreMoviesAsync } from "../store/moviesSlice";
+import { fetchMovies, setFiltersFromUrl, loadMoreMoviesAsync } from "../store/moviesSlice";
 import { Spinner } from "react-bootstrap";
 
 const MovieList = () => {

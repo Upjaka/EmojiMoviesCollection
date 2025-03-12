@@ -1,42 +1,34 @@
 import React, { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
-import axiosInstance from "../axiosInstance";
+import { Modal, Button, Pagination } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import MoviePreview from "./MoviePreview"; // Импортируем новый компонент
+import "../styles/profileModal.css";
 
 const ProfileModal = ({ isModalOpen, closeModal }) => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); 
+  const userReactions = useSelector((state) => state.userReactions.reactions);
+  const movies = useSelector((state) => state.movies.movies);
 
-  const handlePasswordChange = async () => {
-    if (newPassword !== confirmPassword) {
-      setError("Пароли не совпадают.");
-      return;
-    }
+  const itemsPerPage = 3;
+  const [currentPage, setCurrentPage] = useState(1);
 
-    try {
-      const response = await axiosInstance.post("/change-password/", {
-        current_password: currentPassword,
-        new_password: newPassword,
-        confirm_new_password: confirmPassword,
-      });
+  const uniqueMovies = Array.from(
+    new Set(userReactions.map((reaction) => reaction.movie))
+  ).map((id) => movies.find((movie) => movie.id === id));
 
-      if (response.status === 200) {
-        setSuccess("Пароль успешно изменен!");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-        setError("");
-      }
-    } catch (error) {
-      setError("Ошибка при смене пароля.");
-      console.error("Error changing password:", error);
-    }
+  const totalPages = Math.ceil(uniqueMovies.length / itemsPerPage);
+
+
+  const indexOfLastMovie = currentPage * itemsPerPage;
+  const indexOfFirstMovie = indexOfLastMovie - itemsPerPage;
+
+  const currentMovies = uniqueMovies.slice(indexOfFirstMovie, indexOfLastMovie);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
-    <Modal show={isModalOpen} onHide={closeModal} centered>
+    <Modal show={isModalOpen} onHide={closeModal} centered size="lg">
       <Modal.Header closeButton>
         <Modal.Title>Мой профиль</Modal.Title>
       </Modal.Header>
@@ -44,50 +36,50 @@ const ProfileModal = ({ isModalOpen, closeModal }) => {
         <div className="profile-info">
           <p><strong>Имя пользователя:</strong> exampleUser</p>
           <p><strong>Электронная почта:</strong> example@mail.com</p>
+
+          <hr />
+          <div className="favorites-movies">
+            <div className="favorites-movies-title">
+              <span>Фильмы, на которые Вы реагировали</span>
+            </div>
+
+            <div className="favorites-movies-list mt-3">
+              {currentMovies.length > 0 ? (
+                currentMovies.map((movie) => (
+                  <MoviePreview
+                    key={movie.id}
+                    movie={movie}
+                    reactions={userReactions}
+                  />
+                ))
+              ) : (
+                <p>Вы еще не оставили реакции на фильмы.</p>
+              )}
+            </div>
+
+            {totalPages > 1 && (
+              <Pagination className="justify-content-center mt-3">
+                <Pagination.Prev
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                />
+                {[...Array(totalPages)].map((_, index) => (
+                  <Pagination.Item
+                    key={index + 1}
+                    active={index + 1 === currentPage}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </Pagination.Item>
+                ))}
+                <Pagination.Next
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                />
+              </Pagination>
+            )}
+          </div>
         </div>
-
-        <h5>Сменить пароль</h5>
-        <Form>
-          {error && <p className="text-danger">{error}</p>}
-          {success && <p className="text-success">{success}</p>}
-
-
-          <Form.Group className="mb-3" controlId="formCurrentPassword">
-            
-            <Form.Label>Текущий пароль</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Введите текущий пароль"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formNewPassword">
-            
-            <Form.Label>Новый пароль</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Введите новый пароль"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formConfirmPassword">
-            <Form.Label>Подтвердите новый пароль</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Повторите новый пароль"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-          </Form.Group>
-
-          <Button variant="primary" onClick={handlePasswordChange}>
-            Сменить пароль
-          </Button>
-        </Form>
       </Modal.Body>
     </Modal>
   );
