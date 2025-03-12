@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { setSelectedMovie } from "../store/moviesSlice";
 import axiosInstance from "../axiosInstance";
 
@@ -39,10 +39,8 @@ const MovieModal = () => {
       const isReactionAlreadySet = isUserReaction(reaction);
   
       if (isReactionAlreadySet) {
-        // Удаляем реакцию, если она уже была поставлена
         await axiosInstance.delete(`/reactions/${selectedMovie.id}/${reaction}/`);
   
-        // Обновляем счетчик реакций
         const updatedReactions = {
           ...selectedMovie.reactions_count,
           [reaction]: selectedMovie.reactions_count[reaction] - 1,
@@ -50,14 +48,12 @@ const MovieModal = () => {
   
         dispatch(setSelectedMovie({ ...selectedMovie, reactions_count: updatedReactions }));
       } else {
-        // Добавляем новую реакцию
         const response = await axiosInstance.post("/reactions/", {
           movie: selectedMovie.id,
           reaction: reaction,
         });
   
         if (response.status === 201) {
-          // Обновляем счетчик реакций
           const updatedReactions = {
             ...selectedMovie.reactions_count,
             [reaction]: (selectedMovie.reactions_count[reaction] || 0) + 1,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Header.css";
 import AuthModal from "./AuthModal";
+import ProfileModal from "./ProfileModal";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout, register } from "../store/authSlice";
 
@@ -11,6 +12,7 @@ const Header = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -51,6 +53,14 @@ const Header = () => {
     }
   };
 
+  const openProfileModal = () => {
+    setIsProfileModalOpen(true);
+  };
+
+  const closeProfileModal = () => {
+    setIsProfileModalOpen(false);
+  };
+
   return (
     <header className="py-4">
       <div className="container px-4 px-lg-5 d-flex justify-content-between align-items-center">
@@ -65,7 +75,7 @@ const Header = () => {
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownProfileButton">
             <li><button className="dropdown-item" type="button">
-              <span className="text text-white">Мой профиль</span>
+              <span className="text text-white" onClick={openProfileModal}>Мой профиль</span>
             </button></li>
             <li><hr className="text-white"/></li>
             <li><button className="dropdown-item" type="button">
@@ -88,6 +98,11 @@ const Header = () => {
         handleLogin={handleLogin}
         handleRegister={handleRegister}
         error={error}
+      />
+
+      <ProfileModal
+        isModalOpen={isProfileModalOpen}
+        closeModal={closeProfileModal}
       />
     </header>
   );
