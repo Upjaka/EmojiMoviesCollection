@@ -34,25 +34,43 @@ const MovieModal = () => {
 
   const handleReactionClick = async (reaction) => {
     if (!selectedMovie) return;
-
+  
     try {
-      const response = await axiosInstance.post("/reactions/", {
-        movie: selectedMovie.id,
-        reaction: reaction,
-      });
-
-      if (response.status === 201) {
+      const isReactionAlreadySet = isUserReaction(reaction);
+  
+      if (isReactionAlreadySet) {
+        // Удаляем реакцию, если она уже была поставлена
+        await axiosInstance.delete(`/reactions/${selectedMovie.id}/${reaction}/`);
+  
+        // Обновляем счетчик реакций
         const updatedReactions = {
           ...selectedMovie.reactions_count,
-          [reaction]: (selectedMovie.reactions_count[reaction] || 0) + 1,
+          [reaction]: selectedMovie.reactions_count[reaction] - 1,
         };
-
+  
         dispatch(setSelectedMovie({ ...selectedMovie, reactions_count: updatedReactions }));
+      } else {
+        // Добавляем новую реакцию
+        const response = await axiosInstance.post("/reactions/", {
+          movie: selectedMovie.id,
+          reaction: reaction,
+        });
+  
+        if (response.status === 201) {
+          // Обновляем счетчик реакций
+          const updatedReactions = {
+            ...selectedMovie.reactions_count,
+            [reaction]: (selectedMovie.reactions_count[reaction] || 0) + 1,
+          };
+  
+          dispatch(setSelectedMovie({ ...selectedMovie, reactions_count: updatedReactions }));
+        }
       }
     } catch (error) {
-      console.error("Ошибка при отправке реакции:", error);
+      console.error("Ошибка при отправке/удалении реакции:", error);
     }
   };
+  
 
   const isUserReaction = (reaction) => {
     return userReactions.some(

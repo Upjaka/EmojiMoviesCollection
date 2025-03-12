@@ -1,6 +1,7 @@
 from django.db.models import Q, Count
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import NotFound
 from rest_framework.generics import DestroyAPIView
 from rest_framework.response import Response
 from .models import Movie, Reaction
@@ -103,7 +104,7 @@ class ReactionDestroyView(DestroyAPIView):
             reaction = Reaction.objects.get(user=user, movie_id=movie_id, reaction=reaction_type)
             return reaction
         except Reaction.DoesNotExist:
-            raise Response({"detail": "Reaction not found."}, status=status.HTTP_404_NOT_FOUND)
+            raise NotFound(detail="Reaction not found.")
 
     def perform_destroy(self, instance):
         # Удаляем реакцию
