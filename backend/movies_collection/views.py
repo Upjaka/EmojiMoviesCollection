@@ -1,6 +1,7 @@
 from django.db.models import Q, Count
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
+from rest_framework.generics import DestroyAPIView
 from rest_framework.response import Response
 from .models import Movie, Reaction
 from .serializers import MovieSerializer
@@ -84,3 +85,27 @@ class ReactionListCreateView(generics.ListCreateAPIView):
     # Переопределение метода для фильтрации реакций по текущему пользователю
     def get_queryset(self):
         return Reaction.objects.filter(user=self.request.user)
+
+
+class ReactionDestroyView(DestroyAPIView):
+    queryset = Reaction.objects.all()
+    serializer_class = ReactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Получаем объект реакции на основе запроса
+        user = self.request.user
+        movie_id = self.kwargs['movie_id']
+        reaction_type = self.kwargs['reaction']
+
+        # Ищем реакцию, которая соответствует текущему пользователю, фильму и типу реакции
+        try:
+            reaction = Reaction.objects.get(user=user, movie_id=movie_id, reaction=reaction_type)
+            return reaction
+        except Reaction.DoesNotExist:
+            raise Response({"detail": "Reaction not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    def perform_destroy(self, instance):
+        # Удаляем реакцию
+        instance.delete()
+        return Response({"detail": "Reaction deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
