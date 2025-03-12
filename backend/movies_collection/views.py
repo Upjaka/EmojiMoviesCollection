@@ -1,8 +1,11 @@
 from django.db.models import Q, Count
+from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Movie, Reaction
 from .serializers import MovieSerializer
+from .serializers import ReactionSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 @api_view(['GET'])
@@ -67,3 +70,12 @@ def movie_list(request):
         })
 
     return Response(movie_data)
+
+
+class CreateReactionView(generics.CreateAPIView):
+    queryset = Reaction.objects.all()
+    serializer_class = ReactionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

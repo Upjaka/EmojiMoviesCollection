@@ -6,12 +6,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import RegisterSerializer
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def protected_view(request):
-    return Response({"message": "Вы авторизованы!", "user": request.user.username})
-
-
 @api_view(['POST'])
 def register_user(request):
     if request.method == 'POST':
