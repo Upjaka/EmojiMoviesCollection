@@ -31,6 +31,8 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class ReactionSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # Автоматически подставляет request.user
+
     class Meta:
         model = Reaction
-        fields = ['user', 'movie', 'reaction_type', 'created_at']
+        fields = ['id', 'user', 'movie', 'reaction']  # Поле `user` теперь не нужно передавать вручную

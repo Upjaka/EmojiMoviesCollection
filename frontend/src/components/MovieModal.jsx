@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Modal, Button } from "react-bootstrap";
 import { setSelectedMovie } from "../store/moviesSlice";
+import axiosInstance from "../axiosInstance";
 
 import "../styles/modal.css";
 import "../styles/MovieModal.css";
@@ -13,6 +14,28 @@ const MovieModal = () => {
 
   const handleClose = () => {
     dispatch(setSelectedMovie(null));
+  };
+
+  const handleReactionClick = async (reaction) => {
+    if (!selectedMovie) return;
+
+    try {
+      const response = await axiosInstance.post("/reactions/", {
+        movie: selectedMovie.id,
+        reaction: reaction,
+      });
+
+      if (response.status === 201) {
+        const updatedReactions = {
+          ...selectedMovie.reactions_count,
+          [reaction]: (selectedMovie.reactions_count[reaction] || 0) + 1,
+        };
+
+        dispatch(setSelectedMovie({ ...selectedMovie, reactions_count: updatedReactions }));
+      }
+    } catch (error) {
+      console.error("Ошибка при отправке реакции:", error);
+    }
   };
 
   const emojiMap = {
@@ -56,7 +79,7 @@ const MovieModal = () => {
       <Modal.Footer>
         <div className="modal-reactions-container">
             {Object.entries(selectedMovie.reactions_count).map(([reaction, count]) => (
-                <div key={reaction} className="modal-reaction-item">
+                <div key={reaction} className="modal-reaction-item" onClick={() => handleReactionClick(reaction)}>
                     <span className="modal-reaction-icon">{emojiMap[reaction]}</span>
                     <span className="modal-reaction-count">{count}</span>
                 </div>

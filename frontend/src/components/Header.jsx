@@ -59,16 +59,16 @@ const Header = () => {
           <h3 className="display-4 fw-bolder text-title m-0">Emoji Movies</h3>
         </div>
         {isAuthenticated ? (
-          <div class="dropdown">
-          <button class="btn btn-primary btn-login" type="button" id="dropdownProfileButton" data-bs-toggle="dropdown" aria-expanded="false">
+          <div className="dropdown">
+          <button className="btn btn-primary btn-login" type="button" id="dropdownProfileButton" data-bs-toggle="dropdown" aria-expanded="false">
             Профиль
           </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownProfileButton">
-            <li><button class="dropdown-item" type="button">
+          <ul className="dropdown-menu" aria-labelledby="dropdownProfileButton">
+            <li><button className="dropdown-item" type="button">
               <span className="text text-white">Мой профиль</span>
             </button></li>
             <li><hr className="text-white"/></li>
-            <li><button class="dropdown-item" type="button">
+            <li><button className="dropdown-item" type="button">
               <span className="text text-white" onClick={handleLogout}>Выйти</span>
             </button></li>
           </ul>
