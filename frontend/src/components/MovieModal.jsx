@@ -54,11 +54,11 @@ const MovieModal = () => {
         </div>
       </Modal.Body>
       <Modal.Footer>
-        <div className="reactions-container">
+        <div className="modal-reactions-container">
             {Object.entries(selectedMovie.reactions_count).map(([reaction, count]) => (
-                <div key={reaction} className="reaction-item">
-                    <span className="reaction-icon">{emojiMap[reaction]}</span>
-                    <span className="reaction-count">{count}</span>
+                <div key={reaction} className="modal-reaction-item">
+                    <span className="modal-reaction-icon">{emojiMap[reaction]}</span>
+                    <span className="modal-reaction-count">{count}</span>
                 </div>
             ))}
         </div>

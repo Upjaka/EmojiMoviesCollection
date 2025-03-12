@@ -30,7 +30,7 @@
 
 .btn-close {
     position: absolute;
-    top: -9%;
-    right: -6%;
+    top: 0%;
+    right: -5%;
     background-color: rgb(189, 201, 197);
 }
