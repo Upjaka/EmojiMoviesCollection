@@ -31,8 +31,20 @@ class MovieSerializer(serializers.ModelSerializer):
 
 
 class ReactionSerializer(serializers.ModelSerializer):
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())  # Автоматически подставляет request.user
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Reaction
-        fields = ['id', 'user', 'movie', 'reaction']  # Поле `user` теперь не нужно передавать вручную
+        fields = ['id', 'user', 'movie', 'reaction']
+
+    def validate(self, data):
+        user = self.context["request"].user  # Получаем пользователя из запроса
+        movie = data["movie"]
+        reaction_type = data["reaction_type"]
+
+        if Reaction.objects.filter(user=user, movie=movie, reaction_type=reaction_type).exists():
+            raise serializers.ValidationError(
+                {"non_field_errors": ["Вы уже оставили такую же реакцию на этот фильм."]}
+            )
+
+        return data
