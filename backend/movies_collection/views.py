@@ -46,7 +46,7 @@ class MovieListAPIView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        page_size = 20  # Define how many items per page
+        page_size = 12  # Define how many items per page
         page = int(self.request.GET.get('page', 1))  # Get the page from query parameters
 
         # Pagination logic

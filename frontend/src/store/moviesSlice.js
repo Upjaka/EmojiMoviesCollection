@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import qs from "qs";
+import { act } from "react";
 
 export const fetchMovies = createAsyncThunk(
   "movies/fetchMovies",
@@ -21,11 +22,37 @@ export const fetchMovies = createAsyncThunk(
     return {
       movies: data.movies,
       count: data.count,
-      nextPage: data.next ? parseInt(new URL(data.next).searchParams.get('page')) : null,
-      prevPage: data.previous ? parseInt(new URL(data.previous).searchParams.get('page')) : null,
+      nextPage: data.next,
+      prevPage: data.previous,
     };
   }
 );
+
+export const loadMoreMoviesAsync = createAsyncThunk(
+  "movies/loadMoreMovies",
+  async (_, { dispatch, getState }) => {
+    const state = getState().movies;
+    console.log(state);  // Для отладки
+    if (state.nextPage != null) {
+      // Используем state.nextPage для получения следующей страницы
+      const response = await fetch(state.nextPage); 
+      const data = await response.json();
+
+      // Проверяем, есть ли данные в ответе
+      if (data.movies) {
+        dispatch({
+          type: "movies/setMovies", // предполагается, что у вас есть action для обновления списка
+          payload: {
+            movies: [...state.movies, ...data.movies],  // добавляем новые фильмы к существующим
+            nextPage: data.next, // обновляем nextPage для дальнейших запросов
+            prevPage: data.previous, // обновляем prevPage, если нужно
+          }
+        });
+      }
+    }
+  }
+);
+
 
 const initialState = {
   movies: [],
@@ -38,12 +65,19 @@ const initialState = {
   totalCount: 0,  // total count of items
   nextPage: null, // URL for the next page
   prevPage: null, // URL for the previous page
+  isLoading: false, // Loading state to show spinner
+  
 };
 
 const moviesSlice = createSlice({
   name: "movies",
   initialState,
   reducers: {
+    setMovies: (state, action) => {
+      state.movies = action.payload.movies;
+      state.nextPage = action.payload.nextPage;
+      state.prevPage = action.payload.prevPage;
+    },
     setSearchText: (state, action) => {
       state.searchText = action.payload;
     },
@@ -59,6 +93,9 @@ const moviesSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
     updateUrlParams: (state) => {
       const queryParams = qs.stringify(
         {
@@ -73,12 +110,18 @@ const moviesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(fetchMovies.pending, (state) => {
+      state.isLoading = true;
+    });
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
-      state.movies = action.payload.movies;
-      state.totalCount = action.payload.count;
+      state.movies = [...action.payload.movies];
       state.nextPage = action.payload.nextPage;
-      state.prevPage = action.payload.prevPage;
-      state.totalPages = Math.ceil(state.totalCount / 20);  // Assume 20 items per page
+      state.totalCount = action.payload.count;
+      state.totalPages = action.payload.totalPages;
+      state.isLoading = false;
+    });
+    builder.addCase(fetchMovies.rejected, (state) => {
+      state.isLoading = false;
     });
   },
 });
@@ -89,6 +132,7 @@ export const {
   setSelectedGenres,
   setSelectedMovie,
   setCurrentPage,
+  setLoading,
   updateUrlParams,
 } = moviesSlice.actions;
 
