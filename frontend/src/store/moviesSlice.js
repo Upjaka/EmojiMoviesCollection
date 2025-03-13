@@ -1,36 +1,44 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import qs from "qs";
 
-export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
-  const response = await fetch("http://127.0.0.1:8000/api/movies/");
-  const data = await response.json();
-  return data;
-});
+export const fetchMovies = createAsyncThunk(
+  "movies/fetchMovies",
+  async (page = 1, { getState }) => {
+    const state = getState().movies;
+
+    const params = {
+      search: state.searchText || undefined,
+      year: state.selectedYear !== "all" ? state.selectedYear : undefined,
+      genres: state.selectedGenres.length > 0 ? state.selectedGenres : undefined,
+      page,
+    };
+
+    const queryString = qs.stringify(params, { arrayFormat: "comma", skipNulls: true });
+    const response = await fetch(`http://127.0.0.1:8000/api/movies/?${queryString}`);
+    const data = await response.json();
+
+    // Now we handle the response format from the backend
+    return {
+      movies: data.movies,
+      count: data.count,
+      nextPage: data.next ? parseInt(new URL(data.next).searchParams.get('page')) : null,
+      prevPage: data.previous ? parseInt(new URL(data.previous).searchParams.get('page')) : null,
+    };
+  }
+);
 
 const initialState = {
   movies: [],
-  filteredMovies: [],
-  loadedMovies: [],
   searchText: "",
   selectedYear: "all",
   selectedGenres: [],
-  moviesPerLoad: 8,
   selectedMovie: null,
+  currentPage: 1,
+  totalPages: 1,  // total pages
+  totalCount: 0,  // total count of items
+  nextPage: null, // URL for the next page
+  prevPage: null, // URL for the previous page
 };
-
-export const loadMoreMoviesAsync = createAsyncThunk(
-  "movies/loadMoreMovies",
-  async (_, { getState }) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const state = getState().movies;
-        const currentLength = state.loadedMovies.length;
-        const nextMovies = state.filteredMovies.slice(currentLength, currentLength + state.moviesPerLoad);
-        resolve(nextMovies);
-      }, 1000);
-    });
-  }
-);
 
 const moviesSlice = createSlice({
   name: "movies",
@@ -38,70 +46,39 @@ const moviesSlice = createSlice({
   reducers: {
     setSearchText: (state, action) => {
       state.searchText = action.payload;
-      moviesSlice.caseReducers.filterMovies(state);
     },
     setSelectedYear: (state, action) => {
       state.selectedYear = action.payload;
-      moviesSlice.caseReducers.filterMovies(state);
     },
     setSelectedGenres: (state, action) => {
       state.selectedGenres = action.payload;
-      moviesSlice.caseReducers.filterMovies(state);
     },
     setSelectedMovie: (state, action) => {
       state.selectedMovie = action.payload;
     },
-    filterMovies: (state) => {
-      state.filteredMovies = state.movies.filter((movie) => {
-        return (
-          (state.searchText === "" ||
-            movie.title.toLowerCase().includes(state.searchText.toLowerCase())) &&
-          (state.selectedYear === "all" || movie.year.toString() === state.selectedYear) &&
-          (state.selectedGenres.length === 0 ||
-            state.selectedGenres.every((genre) => movie.genres.includes(genre)))
-        );
-      });
-      moviesSlice.caseReducers.updateUrlParams(state);
-      state.loadedMovies = state.filteredMovies.slice(0, state.moviesPerLoad);
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
     },
-    loadMoreMovies: (state) => {
-        const currentLength = state.loadedMovies.length;
-        const nextMovies = state.filteredMovies.slice(currentLength, currentLength + state.moviesPerLoad);
-        state.loadedMovies = [...state.loadedMovies, ...nextMovies];
-    },
-    setFiltersFromUrl: (state, action) => {
-        state.searchText = action.payload.search || "";
-        state.selectedYear = action.payload.year || "all";
-      
-        state.selectedGenres = action.payload.genres
-          ? Array.isArray(action.payload.genres)
-            ? action.payload.genres
-            : [action.payload.genres]
-          : [];
-      
-        moviesSlice.caseReducers.filterMovies(state);
-      },
     updateUrlParams: (state) => {
       const queryParams = qs.stringify(
         {
           search: state.searchText || undefined,
           year: state.selectedYear !== "all" ? state.selectedYear : undefined,
           genres: state.selectedGenres.length > 0 ? state.selectedGenres : undefined,
+          page: state.currentPage, // Include current page in URL params
         },
         { arrayFormat: "comma", skipNulls: true }
       );
-
       window.history.replaceState(null, "", `?${queryParams}`);
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.fulfilled, (state, action) => {
-      state.movies = action.payload;
-      state.filteredMovies = action.payload;
-      moviesSlice.caseReducers.filterMovies(state);
-    });
-    builder.addCase(loadMoreMoviesAsync.fulfilled, (state, action) => {
-      state.loadedMovies = [...state.loadedMovies, ...action.payload];
+      state.movies = action.payload.movies;
+      state.totalCount = action.payload.count;
+      state.nextPage = action.payload.nextPage;
+      state.prevPage = action.payload.prevPage;
+      state.totalPages = Math.ceil(state.totalCount / 20);  // Assume 20 items per page
     });
   },
 });
@@ -111,7 +88,8 @@ export const {
   setSelectedYear,
   setSelectedGenres,
   setSelectedMovie,
-  setFiltersFromUrl,
-  loadMoreMovies
+  setCurrentPage,
+  updateUrlParams,
 } = moviesSlice.actions;
+
 export default moviesSlice.reducer;
