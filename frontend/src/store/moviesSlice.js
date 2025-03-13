@@ -115,11 +115,11 @@ const moviesSlice = createSlice({
       state.selectedGenres = action.payload.genres
         ? Array.isArray(action.payload.genres)
           ? action.payload.genres
-          : [action.payload.genres]
+          : action.payload.genres.split(",") // Разбиваем строку в массив
         : [];
     
       fetchMovies();
-    },
+    },    
   },
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.pending, (state) => {

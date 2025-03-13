@@ -18,7 +18,6 @@ const FiltersBar = () => {
     
     const delayDebounce = setTimeout(() => {
       dispatch(setSearchText(localSearchText));
-      console.log("search");
       dispatch(fetchMovies());
       dispatch(updateUrlParams());
     }, 500);
@@ -39,7 +38,6 @@ const FiltersBar = () => {
 
   const handleYearChange = (e) => {
     dispatch(setSelectedYear(e.target.value));
-    console.log("year");
     dispatch(fetchMovies());
     dispatch(updateUrlParams());
   };
@@ -50,7 +48,6 @@ const FiltersBar = () => {
       : [...selectedGenres, genre];
 
     dispatch(setSelectedGenres(updatedGenres));
-    console.log("genres");
     dispatch(fetchMovies());
     dispatch(updateUrlParams());
   };
@@ -62,7 +59,7 @@ const FiltersBar = () => {
           className="search-input"
           type="text"
           placeholder="Поиск по названию..."
-          value={localSearchText}
+          value={searchText}
           onChange={handleSearch}
         />
       </div>
