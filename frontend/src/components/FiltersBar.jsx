@@ -8,9 +8,17 @@ const FiltersBar = () => {
   const { searchText, selectedYear, selectedGenres } = useSelector((state) => state.movies);
   const [localSearchText, setLocalSearchText] = useState(searchText);
 
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
   useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
+    
     const delayDebounce = setTimeout(() => {
       dispatch(setSearchText(localSearchText));
+      console.log("search");
       dispatch(fetchMovies());
       dispatch(updateUrlParams());
     }, 500);
@@ -31,6 +39,7 @@ const FiltersBar = () => {
 
   const handleYearChange = (e) => {
     dispatch(setSelectedYear(e.target.value));
+    console.log("year");
     dispatch(fetchMovies());
     dispatch(updateUrlParams());
   };
@@ -41,6 +50,7 @@ const FiltersBar = () => {
       : [...selectedGenres, genre];
 
     dispatch(setSelectedGenres(updatedGenres));
+    console.log("genres");
     dispatch(fetchMovies());
     dispatch(updateUrlParams());
   };

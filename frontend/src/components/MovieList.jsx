@@ -6,7 +6,7 @@ import MovieListItem from "./MovieListItem";
 import "../styles/MovieList.css";
 import FiltersBar from "./FiltersBar";
 import MovieModal from "./MovieModal";
-import { fetchMovies,loadMoreMoviesAsync } from "../store/moviesSlice";
+import { fetchMovies,loadMoreMoviesAsync, setFiltersFromUrl } from "../store/moviesSlice";
 import { Spinner } from "react-bootstrap";  // Import Bootstrap Spinner
 
 const MovieList = () => {
@@ -37,6 +37,16 @@ const MovieList = () => {
   useEffect(() => {
     dispatch(fetchMovies(currentPage)); // Pass the current page to the API call
   }, [dispatch, currentPage]);
+
+  useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search, {
+        ignoreQueryPrefix: true,
+        arrayFormat: "comma",
+      });
+      dispatch(setFiltersFromUrl(params));
+    }
+  }, [dispatch]);
 
   // Handle search query from the URL
   useEffect(() => {

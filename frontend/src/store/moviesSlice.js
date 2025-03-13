@@ -108,6 +108,18 @@ const moviesSlice = createSlice({
       );
       window.history.replaceState(null, "", `?${queryParams}`);
     },
+    setFiltersFromUrl: (state, action) => {
+      state.searchText = action.payload.search || "";
+      state.selectedYear = action.payload.year || "all";
+    
+      state.selectedGenres = action.payload.genres
+        ? Array.isArray(action.payload.genres)
+          ? action.payload.genres
+          : [action.payload.genres]
+        : [];
+    
+      fetchMovies();
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchMovies.pending, (state) => {
@@ -134,6 +146,7 @@ export const {
   setCurrentPage,
   setLoading,
   updateUrlParams,
+  setFiltersFromUrl,
 } = moviesSlice.actions;
 
 export default moviesSlice.reducer;
