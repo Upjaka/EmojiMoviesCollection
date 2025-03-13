@@ -1,11 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setSearchText,
-  setSelectedYear,
-  setSelectedGenres,
-} from "../store/moviesSlice";
-
-import "../styles/FiltersBar.css"
+import { setSearchText, setSelectedYear, setSelectedGenres, setPage } from "../store/moviesSlice";
+import "../styles/FiltersBar.css";
 
 const FiltersBar = () => {
   const dispatch = useDispatch();
@@ -21,10 +16,12 @@ const FiltersBar = () => {
 
   const handleSearch = (e) => {
     dispatch(setSearchText(e.target.value));
+    dispatch(setPage(1));
   };
 
   const handleYearChange = (e) => {
     dispatch(setSelectedYear(e.target.value));
+    dispatch(setPage(1));
   };
 
   const handleGenreChange = (genre) => {
@@ -33,6 +30,7 @@ const FiltersBar = () => {
       : [...selectedGenres, genre];
 
     dispatch(setSelectedGenres(updatedGenres));
+    dispatch(setPage(1));
   };
 
   return (
@@ -63,21 +61,21 @@ const FiltersBar = () => {
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownGenresButton">
             {genresList.map((genre) => (
-                <li>
-                  <div key={genre} className="dropdown-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id={`genre-${genre}`}
-                      checked={selectedGenres.includes(genre)}
-                      onChange={() => handleGenreChange(genre)}
-                    />
-                    <label className="" htmlFor={`genre-${genre}`}>
-                      {genre}
-                    </label>
-                  </div>
-                </li>
-              ))}
+              <li key={genre}>
+                <div className="dropdown-item">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id={`genre-${genre}`}
+                    checked={selectedGenres.includes(genre)}
+                    onChange={() => handleGenreChange(genre)}
+                  />
+                  <label className="" htmlFor={`genre-${genre}`}>
+                    {genre}
+                  </label>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

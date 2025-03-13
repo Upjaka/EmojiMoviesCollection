@@ -1,36 +1,60 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import qs from "qs";
+import axiosInstance from "../axiosInstance";
 
-export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
-  const response = await fetch("http://127.0.0.1:8000/api/movies/");
-  const data = await response.json();
-  return data;
-});
+export const fetchMovies = createAsyncThunk(
+  "movies/fetchMovies",
+  async (_, { getState }) => {
+    const state = getState().movies;
+    const params = {
+      search: state.searchText || "",
+      page: state.currentPage,
+    };
+
+    const response = await axiosInstance.get("/movies/", { params });
+    return response.data;
+  }
+);
+
+export const loadMoreMoviesAsync = createAsyncThunk(
+  "movies/loadMoreMovies",
+  async (_, { dispatch, getState }) => {
+    const state = getState().movies;
+    if (!state.hasMoreMovies || state.isLoading) return; // Проверяем, есть ли ещё фильмы
+
+    dispatch(setPage(state.currentPage + 1)); // Увеличиваем страницу
+    dispatch(fetchMovies()); // Загружаем следующую страницу
+  }
+);
 
 const initialState = {
   movies: [],
-  filteredMovies: [],
   loadedMovies: [],
   searchText: "",
   selectedYear: "all",
   selectedGenres: [],
   moviesPerLoad: 8,
   selectedMovie: null,
+  isLoading: false,
+  currentPage: 1,
+  totalPages: 1,
+  hasMoreMovies: true, // Флаг для lazy-loading
 };
 
-export const loadMoreMoviesAsync = createAsyncThunk(
-  "movies/loadMoreMovies",
-  async (_, { getState }) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const state = getState().movies;
-        const currentLength = state.loadedMovies.length;
-        const nextMovies = state.filteredMovies.slice(currentLength, currentLength + state.moviesPerLoad);
-        resolve(nextMovies);
-      }, 1000);
-    });
-  }
-);
+
+// export const loadMoreMoviesAsync = createAsyncThunk(
+//   "movies/loadMoreMovies",
+//   async (_, { getState }) => {
+//     return new Promise((resolve) => {
+//       setTimeout(() => {
+//         const state = getState().movies;
+//         const currentLength = state.loadedMovies.length;
+//         const nextMovies = state.filteredMovies.slice(currentLength, currentLength + state.moviesPerLoad);
+//         resolve(nextMovies);
+//       }, 1000);
+//     });
+//   }
+// );
 
 const moviesSlice = createSlice({
   name: "movies",
@@ -50,6 +74,9 @@ const moviesSlice = createSlice({
     },
     setSelectedMovie: (state, action) => {
       state.selectedMovie = action.payload;
+    },
+    setPage(state, action) {
+      state.currentPage = action.payload;
     },
     filterMovies: (state) => {
       state.filteredMovies = state.movies.filter((movie) => {
@@ -95,14 +122,20 @@ const moviesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchMovies.fulfilled, (state, action) => {
-      state.movies = action.payload;
-      state.filteredMovies = action.payload;
-      moviesSlice.caseReducers.filterMovies(state);
-    });
-    builder.addCase(loadMoreMoviesAsync.fulfilled, (state, action) => {
-      state.loadedMovies = [...state.loadedMovies, ...action.payload];
-    });
+    builder
+      .addCase(fetchMovies.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchMovies.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.movies = action.payload.movies;
+        state.loadedMovies = [...state.loadedMovies, ...action.payload.movies]; // Добавляем новые фильмы
+        state.totalPages = action.payload.total_pages;
+        state.hasMoreMovies = state.currentPage < state.totalPages; // Проверяем, есть ли ещё фильмы
+      })
+      .addCase(fetchMovies.rejected, (state) => {
+        state.isLoading = false;
+      })
   },
 });
 
@@ -112,6 +145,7 @@ export const {
   setSelectedGenres,
   setSelectedMovie,
   setFiltersFromUrl,
-  loadMoreMovies
+  loadMoreMovies,
+  setPage,
 } = moviesSlice.actions;
 export default moviesSlice.reducer;
