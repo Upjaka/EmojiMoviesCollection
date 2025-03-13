@@ -1,18 +1,32 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setSearchText,
-  setSelectedYear,
-  setSelectedGenres,
-} from "../store/moviesSlice";
-
-import "../styles/FiltersBar.css"
+import { setSearchText, setSelectedYear, setSelectedGenres, updateUrlParams, fetchMovies } from "../store/moviesSlice";
+import { useEffect, useState } from "react";
+import "../styles/FiltersBar.css";
 
 const FiltersBar = () => {
   const dispatch = useDispatch();
   const { searchText, selectedYear, selectedGenres } = useSelector((state) => state.movies);
+  const [localSearchText, setLocalSearchText] = useState(searchText);
+
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
+    
+    const delayDebounce = setTimeout(() => {
+      dispatch(setSearchText(localSearchText));
+      console.log("search");
+      dispatch(fetchMovies());
+      dispatch(updateUrlParams());
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [localSearchText, dispatch]);
 
   const uniqueYears = ["all", ...Array.from({ length: 2025 - 1990 + 1 }, (_, i) => (1990 + i).toString())];
-
   const genresList = [
     "триллер", "фантастика", "драма", "детектив", "биография",
     "история", "военный", "боевик", "криминал", "ужасы",
@@ -20,11 +34,14 @@ const FiltersBar = () => {
   ];
 
   const handleSearch = (e) => {
-    dispatch(setSearchText(e.target.value));
+    setLocalSearchText(e.target.value);
   };
 
   const handleYearChange = (e) => {
     dispatch(setSelectedYear(e.target.value));
+    console.log("year");
+    dispatch(fetchMovies());
+    dispatch(updateUrlParams());
   };
 
   const handleGenreChange = (genre) => {
@@ -33,6 +50,9 @@ const FiltersBar = () => {
       : [...selectedGenres, genre];
 
     dispatch(setSelectedGenres(updatedGenres));
+    console.log("genres");
+    dispatch(fetchMovies());
+    dispatch(updateUrlParams());
   };
 
   return (
@@ -42,7 +62,7 @@ const FiltersBar = () => {
           className="search-input"
           type="text"
           placeholder="Поиск по названию..."
-          value={searchText}
+          value={localSearchText}
           onChange={handleSearch}
         />
       </div>
@@ -63,21 +83,19 @@ const FiltersBar = () => {
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownGenresButton">
             {genresList.map((genre) => (
-                <li>
-                  <div key={genre} className="dropdown-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id={`genre-${genre}`}
-                      checked={selectedGenres.includes(genre)}
-                      onChange={() => handleGenreChange(genre)}
-                    />
-                    <label className="" htmlFor={`genre-${genre}`}>
-                      {genre}
-                    </label>
-                  </div>
-                </li>
-              ))}
+              <li key={genre}>
+                <div className="dropdown-item">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id={`genre-${genre}`}
+                    checked={selectedGenres.includes(genre)}
+                    onChange={() => handleGenreChange(genre)}
+                  />
+                  <label htmlFor={`genre-${genre}`}>{genre}</label>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
