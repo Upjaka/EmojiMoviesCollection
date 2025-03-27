@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import qs from "qs";
 
 export const fetchMovies = createAsyncThunk("movies/fetchMovies", async () => {
-  const response = await fetch("http://127.0.0.1:8000/api/movies/");
+  const response = await fetch("http://127.0.0.1:9000/api/movies/");
   const data = await response.json();
   return data;
 });
