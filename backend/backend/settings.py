@@ -26,10 +26,17 @@ SECRET_KEY = 'django-insecure-b5wm!^q--tekr)z9m=j-*0poyy^m_lx@0icgbhc3$p8ss7nwzv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "emojimoviescollection.onrender.com",
+]
+
+# Allow environment variable for flexibility
+ALLOWED_HOSTS.extend(os.getenv("ALLOWED_HOSTS", "").split(","))
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
