@@ -15,7 +15,7 @@ export const fetchMovies = createAsyncThunk(
     };
 
     const queryString = qs.stringify(params, { arrayFormat: "comma", skipNulls: true });
-    const response = await fetch(`http://127.0.0.1:8000/api/movies/?${queryString}`);
+    const response = await fetch(`http://127.0.0.1:9000/api/movies/?${queryString}`);
     const data = await response.json();
 
     // Now we handle the response format from the backend
